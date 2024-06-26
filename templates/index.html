@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <title>Image KNN Classifier</title>
+    <style>
+        #image-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="container position-relative"> <!-- Asegúrate de que este contenedor sea relativo -->
+            <div class="position-absolute top-0 end-0 mt-5"> <!-- Posiciona los botones absolutamente a la derecha -->
+                <button style="width: auto; display: flex; align-items: center; justify-content: center;" type="button" class="btn btn-lg btn-primary" data-bs-toggle="popover" data-bs-placement="left" data-bs-title="K-Nearest Neighbors (KNN)" data-bs-content="Es un algoritmo de aprendizaje supervisado ampliamente utilizado en problemas de clasificación y regresión. A continuación, te explico sus características, funcionamiento y aplicaciones.">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
+                    </svg>
+                </button>
+                <button id="popoverLink" style="width: auto; display: flex; align-items: center; justify-content: center;" type="button" class="btn btn-lg btn-secondary mt-2" data-bs-toggle="popover" data-bs-placement="left" data-bs-title="Funcionamiento">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-question-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/>
+                      </svg>
+                </button>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <h1>Carga una imagen para el detector de rostros por KNN</h1>
+                {% if prediction is not none and image_path is not none %}
+                    <img style="width: 350px; height: 350px; " src="{{ url_for('static', filename='uploads/' ~ image_path.split('/')[-1]) }}" alt="Uploaded Image" class="img-fluid">
+                    <h5>Prediction: {{ prediction }}</h5>
+                    <h5>Porcentaje de precisión: {{confidence}}</h5>
+                {% endif %}
+                <form action="/predict" method="post" enctype="multipart/form-data" class="my-3">
+                    <input type="file" id="image-input" name="image" accept="image/*" required>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" id="upload-btn" class="btn btn-primary">Cargar y predecir</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        document.getElementById('upload-btn').addEventListener('click', function() {
+            document.getElementById('image-input').click();
+        });
+
+        document.getElementById('image-input').addEventListener('change', function() {
+            if (this.files.length > 0) {
+                // Opcional: Muestra el nombre del archivo seleccionado o realiza alguna acción.
+                console.log("Archivo seleccionado: ", this.files[0].name);
+                // Envía el formulario automáticamente al seleccionar el archivo.
+                this.form.submit();
+            }
+        });
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+  var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl)
+  })
+  document.addEventListener('DOMContentLoaded', function () {
+    var popoverTriggerEl = document.getElementById('popoverLink');
+    var popover = new bootstrap.Popover(popoverTriggerEl, {
+        content: 'Para mayor información visita <a href="https://www.google.com" target="_blank">www.google.com</a>',
+        html: true, // Permite HTML en el contenido
+    });
+});
+    </script>
+</body>
+</html>
